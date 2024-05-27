@@ -1,4 +1,13 @@
 const contact = require("../Model/ContactSchema")
+const nodemailer = require("nodemailer")
+const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    auth: {
+        user: process.env.MAIL_SENDER,
+        pass: process.env.MAIL_PASSWORD
+    }
+})
 
 const createContact = async (req, res) => {
     try {
@@ -11,6 +20,25 @@ const createContact = async (req, res) => {
         }
         const data = new contact({ name, email, subject, message, city, country, number, address })
         await data.save()
+        mailOptions = {
+            from: data.email,
+            to: process.env.MAIL_SENDER,
+            subject: "A New Contact Recieve ",
+            text: `
+            Name ${data.name}
+            subject ${data.subject}
+            message ${data.message}
+            city ${data.city}
+            country ${data.country}
+            number ${data.number}
+            address ${data.address}
+                  `
+        }
+        transporter.sendMail(mailOptions, ((error) => {
+            if (error) {
+                console.log(error)
+            }
+        }))
         res.status(200).json({
             success: true,
             mess: "Contact Created Successfully",
