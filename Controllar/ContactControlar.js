@@ -19,13 +19,14 @@ const createContact = async (req, res) => {
             })
         }
         const data = new contact({ name, email, subject, message, city, country, number, address })
-        console.log(email)
+        // console.log(email)
         mailOptions = {
             from: email,
             to: process.env.MAIL_SENDER,
             subject: "A New Contact Query Recieve ",
             text: `
             Name ${data.name}
+            email ${data.email}
             subject ${data.subject}
             message ${data.message}
             city ${data.city}
