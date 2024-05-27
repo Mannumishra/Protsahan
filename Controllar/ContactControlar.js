@@ -3,6 +3,7 @@ const nodemailer = require("nodemailer")
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
+    secure: false,
     auth: {
         user: process.env.MAIL_SENDER,
         pass: process.env.MAIL_PASS
@@ -21,9 +22,9 @@ const createContact = async (req, res) => {
         const data = new contact({ name, email, subject, message, city, country, number, address })
         await data.save()
         mailOptions = {
-            from: data.email,
+            from: email,
             to: process.env.MAIL_SENDER,
-            subject: "A New Contact Recieve ",
+            subject: "A New Contact Query Recieve ",
             text: `
             Name ${data.name}
             subject ${data.subject}
