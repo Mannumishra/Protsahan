@@ -24,7 +24,40 @@ const createContact = async (req, res) => {
     }
 }
 
+const getRecord = async (req, res) => {
+    try {
+        let data = await contact.find()
+        res.status(200).json({
+            success: true,
+            mess: "record found",
+            data: data
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            mess: "Internal Server Error"
+        })
+    }
+}
+
+const deleteRecord = async (req, res) => {
+    try {
+        let data = await contact.findOne({ _id: req.params._id })
+        await data.deleteOne()
+        res.status(200).json({
+            success: true,
+            mess: "record deleted successfully"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            mess: "Internal Server Error"
+        })
+    }
+}
 
 module.exports = {
-    createContact: createContact
+    createContact: createContact,
+    getRecord: getRecord,
+    deleteRecord: deleteRecord
 }
