@@ -5,6 +5,8 @@ const contactrouter = require("./Routes/ContactRouter")
 const joinrouter = require("./Routes/JoinRouter")
 const volunterRouter = require("./Routes/Volunteer")
 const empRouter = require("./Routes/EmpRouter")
+const eventRouter = require("./Routes/Eventrouter")
+const galleryRouter = require("./Routes/GalleryRouter")
 require("dotenv").config()
 require("./Db/ConnectDb")
 
@@ -18,6 +20,8 @@ app.use("/api", contactrouter)
 app.use("/api", joinrouter)
 app.use("/api", volunterRouter)
 app.use("/api", empRouter)
+app.use("/api", eventRouter)
+app.use("/api", galleryRouter)
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is Running at ${process.env.PORT}.`)
