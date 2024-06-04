@@ -98,8 +98,7 @@ const deleteRecord = async (req, res) => {
             await data.deleteOne()
             res.status(200).json({
                 success: true,
-                mess: "Record Found",
-                data: data
+                mess: "Record deletd successfully"
             })
         }
     } catch (error) {
