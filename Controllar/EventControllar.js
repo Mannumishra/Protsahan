@@ -30,7 +30,7 @@ const createRecord = async (req, res) => {
             });
         } else {
             let data = new event({ eventname, eventdate, eventdescription, name, address });
-            console.log(image)
+            // console.log(image)
             if (image) {
                 const fileUrl = await uploadImage(image[0].path)
                 data.image = fileUrl;
