@@ -20,7 +20,7 @@ const uploadImage = async (file) => {
 
 const createRecord = async (req, res) => {
     try {
-        console.log(req.body)
+        // console.log(req.body)
         let { eventname, eventdate, eventdescription } = req.body;
         const { image, image1, image2, image3, image4, image5, image6, image7, image8, image9, image10, pdf } = req.files
         if (!eventname || !eventdate || !eventdescription) {
