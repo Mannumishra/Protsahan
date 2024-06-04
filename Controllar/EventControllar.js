@@ -11,6 +11,7 @@ cloudinary.config({
 const uploadImage = async (file) => {
     try {
         let uploadedFile = await cloudinary.uploader.upload(file);
+        // console.log(uploadedFile)
         return uploadedFile.secure_url;
     } catch (error) {
         console.log(error);
@@ -75,8 +76,7 @@ const createRecord = async (req, res) => {
                 data.image10 = fileUrl;
             }
             if (pdf) {
-                const fileurl = await uploadImage(pdf[0].path)
-                data.pdf = fileurl
+                data.pdf = pdf[0].path
             }
             await data.save();
             try {
@@ -112,9 +112,9 @@ const createRecord = async (req, res) => {
             try {
                 fs.unlinkSync(image10[0].path)
             } catch (error) { }
-            try {
-                fs.unlinkSync(pdf[0].path)
-            } catch (error) { }
+            // try {
+            //     fs.unlinkSync(pdf[0].path)
+            // } catch (error) { }
             res.status(200).json({
                 success: true,
                 mess: "Record Saved",

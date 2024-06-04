@@ -15,6 +15,7 @@ const app = express()
 
 app.use(express.json())
 app.set(express.static("./Public"))
+app.use("/Public", express.static("Public"))
 app.use(cors())
 app.use("/api", jobrouter)
 app.use("/api", contactrouter)
