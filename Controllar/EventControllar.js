@@ -28,6 +28,10 @@ const createRecord = async (req, res) => {
         } else {
             let data = new event({ eventname, eventdate, eventdescription });
             if (req.files) {
+                if (req.files.image) {
+                    const fileUrl = await uploadImage(req.file.image[0].path);
+                    data.image = fileUrl;
+                }
                 if (req.files.image1) {
                     const fileUrl = await uploadImage(req.file.image1[0].path);
                     data.image1 = fileUrl;
