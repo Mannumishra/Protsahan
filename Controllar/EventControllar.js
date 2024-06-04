@@ -27,9 +27,51 @@ const createRecord = async (req, res) => {
             });
         } else {
             let data = new event({ eventname, eventdate, eventdescription });
-            if (req.file) {
-                const fileUrl = await uploadImage(req.file.path);
-                data.image = fileUrl;
+            if (req.files) {
+                if (req.files.image1) {
+                    const fileUrl = await uploadImage(req.file.image1[0].path);
+                    data.image1 = fileUrl;
+                }
+                if (req.files.image2) {
+                    const fileUrl = await uploadImage(req.file.image2[0].path);
+                    data.image2 = fileUrl;
+                }
+                if (req.files.image3) {
+                    const fileUrl = await uploadImage(req.file.image3[0].path);
+                    data.image3 = fileUrl;
+                }
+                if (req.files.image4) {
+                    const fileUrl = await uploadImage(req.file.image4[0].path);
+                    data.image4 = fileUrl;
+                }
+                if (req.files.image5) {
+                    const fileUrl = await uploadImage(req.file.image5[0].path);
+                    data.image5 = fileUrl;
+                }
+                if (req.files.image6) {
+                    const fileUrl = await uploadImage(req.file.image6[0].path);
+                    data.image6 = fileUrl;
+                }
+                if (req.files.image7) {
+                    const fileUrl = await uploadImage(req.file.image7[0].path);
+                    data.image7 = fileUrl;
+                }
+                if (req.files.image8) {
+                    const fileUrl = await uploadImage(req.file.image8[0].path);
+                    data.image8 = fileUrl;
+                }
+                if (req.files.image9) {
+                    const fileUrl = await uploadImage(req.file.image9[0].path);
+                    data.image9 = fileUrl;
+                }
+                if (req.files.image10) {
+                    const fileUrl = await uploadImage(req.file.image10[0].path);
+                    data.image10 = fileUrl;
+                }
+                if (req.files.pdf) {
+                    const fileurl = await uploadImage(req.files.pdf[0].path)
+                    data.pdf = fileurl
+                }
             }
             await data.save();
             res.status(200).json({
@@ -144,5 +186,5 @@ module.exports = {
     getRecord: getRecord,
     getSingleRecord: getSingleRecord,
     updateRecord: updateRecord,
-    deleteRecord:deleteRecord
+    deleteRecord: deleteRecord
 }
