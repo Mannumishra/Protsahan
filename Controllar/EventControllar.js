@@ -21,15 +21,15 @@ const uploadImage = async (file) => {
 const createRecord = async (req, res) => {
     try {
         // console.log(req.body)
-        let { eventname, eventdate, eventdescription } = req.body;
+        let { eventname, eventdate, eventdescription, name, address } = req.body;
         const { image, image1, image2, image3, image4, image5, image6, image7, image8, image9, image10, pdf } = req.files
-        if (!eventname || !eventdate || !eventdescription) {
+        if (!eventname || !eventdate || !eventdescription || !name || !address) {
             return res.status(403).json({
                 success: false,
                 mess: "Fill all fields"
             });
         } else {
-            let data = new event({ eventname, eventdate, eventdescription });
+            let data = new event({ eventname, eventdate, eventdescription, name, address });
             console.log(image)
             if (image) {
                 const fileUrl = await uploadImage(image[0].path)
@@ -170,6 +170,8 @@ const updateRecord = async (req, res) => {
             data.eventname = req.body.eventname;
             data.eventdate = req.body.eventdate;
             data.eventdescription = req.body.eventdescription;
+            data.name = req.body.name;
+            data.address = req.body.address;
             if (req.files) {
                 if (req.files.image) {
                     const oldImage = data.image.split("/").pop().split(".")[0]
@@ -260,12 +262,10 @@ const updateRecord = async (req, res) => {
                     data.image10 = url
                 }
                 if (req.files.pdf) {
-                    const oldImage = data.pdf.split("/").pop().split(".")[0]
                     try {
-                        await cloudinary.uploader.destroy(oldImage)
+                        fs.unlinkSync(data.pdf)
                     } catch (error) { }
-                    const url = uploadImage(req.files.pdf[0].path)
-                    data.pdf = url
+                    data.pdf = pdf[0].path
                 }
             }
             await data.save();

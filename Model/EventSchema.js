@@ -13,6 +13,14 @@ const eventSchema = new mongoose.Schema({
         type: String,
         required: [true, "eventdescription is must required"]
     },
+    name:{
+        type:String,
+        required:[true,"name is must required"]
+    },
+    address:{
+        type:String,
+        required:[true,"name is must required"]
+    },
     pdf:{
         type:String,
         required:[true , "pdf is must required"]
