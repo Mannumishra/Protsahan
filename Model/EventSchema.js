@@ -23,7 +23,7 @@ const eventSchema = new mongoose.Schema({
     },
     pdf:{
         type:String,
-        required:[true , "pdf is must required"]
+        // required:[true , "pdf is must required"]
     },
     image: {
         type: String,
