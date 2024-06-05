@@ -44,7 +44,7 @@ const createRecord = async (req, res) => {
             await data.save()
             const mailOptions = {
                 from: 'info@prothsahanteam.org',
-                to: process.env.MAIL_SENDER,
+                to: data.empemail,
                 subject: "Thanku for appliing job",
                 text: `
                     Email:${empemail}

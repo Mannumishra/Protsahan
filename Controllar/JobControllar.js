@@ -22,10 +22,11 @@ const createJob = async (req, res) => {
         const data = new jobdetails({ jobpost, experience, qualification, packageanual, organisationname, address, state, city, pincode, contact, mobile, email })
         await data.save()
         const mailOptions = {
-            from: 'info@prothsahanteam.org',
-            to: process.env.MAIL_SENDER,
-            subject: "A New job posted",
+            from: process.env.MAIL_SENDER,
+            to: data.email,
+            subject: "thanks for post job",
             text: `
+                Thank for posting job on our website , we will contact you with candidate as sson as possible .
                 Email:${email}
                 jobpost: ${jobpost}
                 experience: ${experience}

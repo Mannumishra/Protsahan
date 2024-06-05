@@ -25,8 +25,8 @@ const createRecord = async (req, res) => {
             const data = new volunteer({ donation, sirName, firstName, lastName, dob, panNo, email, mobile, address, country, state, city, pinCode, citizenship, helpMessage })
             await data.save()
             const mailOptions = {
-                from: 'info@prothsahanteam.org',
-                to: process.env.MAIL_SENDER,
+                from: process.env.MAIL_SENDER,
+                to: data.email,
                 subject: "A New Volunterr addedd successfully",
                 text: `
                     Email:${email}
