@@ -1,60 +1,76 @@
-const contact = require("../Model/ContactSchema")
-const nodemailer = require("nodemailer")
+const contact = require("../Model/ContactSchema");
+const nodemailer = require("nodemailer");
+
 const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
+    host: "smtp.hostinger.com",
+    port: 465,
+    secure: true, // true for 465, false for other ports
     auth: {
-        user: "mannu22072000@gmail.com",
-        pass: "vcen opfp tnuj kszu"
-    }
-})
+        user: "info@prothsahanteam.org",
+        pass: "Info@1234",
+    },
+});
 
 const createContact = async (req, res) => {
     try {
         let { name, email, subject, message, city, country, number, address } = req.body;
+        
         if (!name || !email || !subject || !message || !city || !country || !number || !address) {
             return res.status(403).json({
                 success: false,
-                mess: "Fill All Required Fields"
+                mess: "Fill All Required Fields",
             });
         }
 
         const data = new contact({ name, email, subject, message, city, country, number, address });
         await data.save();
+
         const mailOptions = {
-            from: data.email,
-            to: process.env.MAIL_SENDER,
+            from: 'info@prothsahanteam.org',
+            to: process.env.MAIL_SENDER, 
             subject: "A New Contact Received",
             text: `
-            Name: ${name}
-            Subject: ${subject}
-            Message: ${message}
-            City: ${city}
-            Country: ${country}
-            Number: ${number}
-            Address: ${address}
-            `
+                Name: ${name}
+                Email:${email}
+                Subject: ${subject}
+                Message: ${message}
+                City: ${city}
+                Country: ${country}
+                Number: ${number}
+                Address: ${address}
+            `,
         };
-        console.log(mailOptions)
-        transporter.sendMail(mailOptions, (error) => {
+
+        console.log(mailOptions);
+
+        transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.error("Error sending email:", error);
+                return res.status(500).json({
+                    success: false,
+                    mess: "Error sending email",
+                    error: error.message,
+                });
             }
+            console.log("Email sent:", info.response);
+            res.status(200).json({
+                success: true,
+                mess: "Contact Created Successfully",
+                data: data,
+            });
         });
 
-        res.status(200).json({
-            success: true,
-            mess: "Contact Created Successfully",
-            data: data
-        });
     } catch (error) {
         console.error("Error creating contact:", error);
         res.status(500).json({
             success: false,
-            mess: "Internal Server Error"
+            mess: "Internal Server Error",
+            error: error.message,
         });
     }
 };
+
+
 
 const getRecord = async (req, res) => {
     try {

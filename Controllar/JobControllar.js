@@ -1,5 +1,14 @@
 const jobdetails = require("../Model/JobSchema")
-
+const nodemailer = require("nodemailer");
+const transporter = nodemailer.createTransport({
+    host: "smtp.hostinger.com",
+    port: 465,
+    secure: true,
+    auth: {
+        user: "info@prothsahanteam.org",
+        pass: "Info@1234",
+    },
+})
 const createJob = async (req, res) => {
     try {
         console.log("i am hit", req.body)
@@ -11,13 +20,39 @@ const createJob = async (req, res) => {
             })
         }
         const data = new jobdetails({ jobpost, experience, qualification, packageanual, organisationname, address, state, city, pincode, contact, mobile, email })
-        // const data = new jobdetails(req.body)
         await data.save()
-        res.status(200).json({
-            success: true,
-            mess: "Job Post SuccessFully",
-            data: data
+        const mailOptions = {
+            from: 'info@prothsahanteam.org',
+            to: process.env.MAIL_SENDER,
+            subject: "A New job posted",
+            text: `
+                Email:${email}
+                jobpost: ${jobpost}
+                experience: ${experience}
+                qualification: ${qualification}
+                packageanual: ${packageanual}
+                address: ${address}
+                city: ${city}
+            `,
+        };
+        console.log(mailOptions);
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error("Error sending email:", error);
+                return res.status(500).json({
+                    success: false,
+                    mess: "Error sending email",
+                    error: error.message,
+                });
+            }
+            console.log("Email sent:", info.response);
+            res.status(200).json({
+                success: true,
+                mess: "Job Post SuccessFully",
+                data: data
+            })
         })
+
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -113,5 +148,5 @@ module.exports = {
     getRecord: getRecord,
     updateJob: updateJob,
     getSingleRecord: getSingleRecord,
-    deleteJob:deleteJob
+    deleteJob: deleteJob
 }

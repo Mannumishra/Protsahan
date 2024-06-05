@@ -1,5 +1,15 @@
 const emp = require("../Model/EmpDetails")
 const cloudinary = require('cloudinary').v2
+const nodemailer = require("nodemailer");
+const transporter = nodemailer.createTransport({
+    host: "smtp.hostinger.com",
+    port: 465,
+    secure: true,
+    auth: {
+        user: "info@prothsahanteam.org",
+        pass: "Info@1234",
+    },
+})
 const fs = require("fs")
 
 cloudinary.config({
@@ -28,14 +38,34 @@ const createRecord = async (req, res) => {
         else {
             let data = new emp({ empname, empemail })
             if (req.file) {
-                const fileUrl =await uploadImage(req.file.path)
+                const fileUrl = await uploadImage(req.file.path)
                 data.resume = fileUrl
             }
             await data.save()
-            res.status(200).json({
-                success: true,
-                mess: "Record Send",
-                data: data
+            const mailOptions = {
+                from: 'info@prothsahanteam.org',
+                to: process.env.MAIL_SENDER,
+                subject: "Thanku for appliing job",
+                text: `
+                    Email:${empemail}
+                `,
+            };
+            console.log(mailOptions);
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error("Error sending email:", error);
+                    return res.status(500).json({
+                        success: false,
+                        mess: "Error sending email",
+                        error: error.message,
+                    });
+                }
+                console.log("Email sent:", info.response);
+                res.status(200).json({
+                    success: true,
+                    mess: "Record Send",
+                    data: data
+                })
             })
         }
     } catch (error) {
@@ -47,45 +77,45 @@ const createRecord = async (req, res) => {
     }
 }
 
-const getRecord = async(req,res)=>{
+const getRecord = async (req, res) => {
     try {
         let data = await emp.find()
         res.status(200).json({
-            success:true,
-            mess:"Record Found",
-            data:data
+            success: true,
+            mess: "Record Found",
+            data: data
         })
     } catch (error) {
         res.status(500).json({
-            success:false,
-            mess:"Internal Server error"
+            success: false,
+            mess: "Internal Server error"
         })
     }
 }
 
-const deleteRecord = async(req,res)=>{
+const deleteRecord = async (req, res) => {
     try {
-        let data = await emp.findOne({_id:req.params._id})
-        if(data){
-           try {
-            fs.unlinkSync(data.resume)
-           } catch (error) {}
-           await data.deleteOne()
+        let data = await emp.findOne({ _id: req.params._id })
+        if (data) {
+            try {
+                fs.unlinkSync(data.resume)
+            } catch (error) { }
+            await data.deleteOne()
         }
         res.status(200).json({
-            success:true,
-            mess:"Record Deleted"
+            success: true,
+            mess: "Record Deleted"
         })
     } catch (error) {
         res.status(500).json({
-            success:false,
-            mess:"Internal Server error"
+            success: false,
+            mess: "Internal Server error"
         })
     }
 }
 
 module.exports = {
-    createRecord:createRecord,
-    getRecord:getRecord,
-    deleteRecord:deleteRecord
+    createRecord: createRecord,
+    getRecord: getRecord,
+    deleteRecord: deleteRecord
 }
