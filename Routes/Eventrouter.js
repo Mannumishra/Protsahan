@@ -1,15 +1,21 @@
 const { createRecord, getRecord, getSingleRecord, updateRecord, deleteRecord } = require("../Controllar/EventControllar")
 const eventRouter = require("express").Router()
 const multer = require('multer')
-
+const fs = require('fs');
+const path = require('path');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, "./Public/Event")
+        const dir = './Public/Event';
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+
+        cb(null, dir);
     },
     filename: function (req, file, cb) {
-        cb(null, Date.now() + file.originalname)
+        cb(null, Date.now() + path.extname(file.originalname)); 
     }
-})
+});
 
 const upload = multer({ storage: storage })
 
