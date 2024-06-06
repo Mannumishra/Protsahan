@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 const createContact = async (req, res) => {
     try {
         let { name, email, subject, message, city, country, number, address } = req.body;
-        
+
         if (!name || !email || !subject || !message || !city || !country || !number || !address) {
             return res.status(403).json({
                 success: false,
@@ -26,19 +26,18 @@ const createContact = async (req, res) => {
         await data.save();
 
         const mailOptions = {
-            from: 'info@prothsahanteam.org',
-            to: process.env.MAIL_SENDER, 
-            subject: "A New Contact Received",
+            from: data.email,
+            to: process.env.MAIL_SENDER,
+            subject: "Dear Friend, Thanks for your valuable time and support in joining the social cause.",
             text: `
-                Name: ${name}
-                Email:${email}
-                Subject: ${subject}
-                Message: ${message}
-                City: ${city}
-                Country: ${country}
-                Number: ${number}
-                Address: ${address}
-            `,
+                email:${data.email}
+                We have received your mail. 
+                Our team will revert you.
+                Best wishes
+                Jai Hind
+                Vivek Vashistha
+                President
+                `,
         };
 
         console.log(mailOptions);
