@@ -37,36 +37,67 @@ const createRecord = async (req, res) => {
                 mess: "Fill all fields"
             });
         } else {
-            let data = new emp({ empname, empemail, empname, empemail, jobpost, experience, qualification, packageanual, organisationname, address, state, city, pincode, contact, mobile, email });
+            let data = new emp({ empname, empemail, jobpost, experience, qualification, packageanual, organisationname, address, state, city, pincode, contact, mobile, email });
             if (req.file) {
                 const fileUrl = await uploadImage(req.file.path);
                 data.resume = fileUrl;
             }
             await data.save();
-            const mailOptions = {
-                from: process.env.MAIL_SENDER,
-                to: `${data.empemail}, ${data.email}`,
+
+            // Mail to the person applying for the job
+            const mailOptionsApplicant = {
+                from: "info@prothsahanteam.org",
+                to: data.empemail,
                 subject: "Thank you for applying for a job",
                 text: `
                     Thank you for applying for a job. You will receive a call soon from the employer's side.
                 `,
             };
 
-            console.log(mailOptions);
-            transporter.sendMail(mailOptions, (error, info) => {
+            const mailOptionsPoster = {
+                from: "info@prothsahanteam.org",
+                to: data.email,
+                subject: "New Job Application Received",
+                text: `
+                    A new job application has been received for the position of ${data.jobpost}.
+                    Applicant Name: ${data.empname}
+                    Applicant Email: ${data.empemail}
+                    Qualification: ${data.qualification}
+                    Experience: ${data.experience}
+                    Contact: ${data.mobile}
+                    
+                    Please review the application and get in touch with the candidate.
+                `,
+            };
+
+            console.log(mailOptionsApplicant);
+            console.log(mailOptionsPoster);
+
+            transporter.sendMail(mailOptionsApplicant, (error, info) => {
                 if (error) {
-                    console.error("Error sending email:", error);
+                    console.error("Error sending email to applicant:", error);
                     return res.status(500).json({
                         success: false,
-                        mess: "Error sending email",
+                        mess: "Error sending email to applicant",
                         error: error.message,
                     });
                 }
-                console.log("Email sent:", info.response);
-                res.status(200).json({
-                    success: true,
-                    mess: "Record Sent",
-                    data: data
+                console.log("Email sent to applicant:", info.response);
+                transporter.sendMail(mailOptionsPoster, (error, info) => {
+                    if (error) {
+                        console.error("Error sending email to job poster:", error);
+                        return res.status(500).json({
+                            success: false,
+                            mess: "Error sending email to job poster",
+                            error: error.message,
+                        });
+                    }
+                    console.log("Email sent to job poster:", info.response);
+                    res.status(200).json({
+                        success: true,
+                        mess: "Record Sent",
+                        data: data
+                    });
                 });
             });
         }
