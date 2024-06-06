@@ -23,35 +23,56 @@ const createRecord = async (req, res) => {
         } else {
             const data = new volunteer({ donation, sirName, firstName, lastName, dob, panNo, email, mobile, address, country, state, city, pinCode, citizenship, helpMessage, money });
             await data.save();
-            const mailOptions = {
-                from: process.env.MAIL_SENDER,
-                to: `${data.email}, ${process.env.MAIL_SENDER}`, // Send email to both recipient
-                subject: "Dear Friend, Thanks for your valuable time and support in joining the social cause.",
+            const mailOptionsApplicant = {
+                from: "info@prothsahanteam.org",
+                to: data.email,
+                subject: "Recipt For Money Donation.",
                 text: `
-                email:${data.email}
-                We have received your mail. 
-                Our team will revert you.
-                Best wishes
-                Jai Hind
-                Vivek Vashistha
-                President
+                    Thank you for donate money to protsahn team.
                 `,
             };
-            console.log(mailOptions);
-            transporter.sendMail(mailOptions, (error, info) => {
+
+            const mailOptionsPoster = {
+                from: "info@prothsahanteam.org",
+                to: process.env.MAIL_SENDER,
+                subject: "New Donation",
+                text: `
+                    A new donation we have received form doner.
+                   Doner Name: ${data.firstName}${data.lastName}
+                   Doner Email: ${data.email}
+                    Doner Mobile: ${data.mobile}
+                    Donate Money: ${data.money} .
+                `,
+            };
+
+            console.log(mailOptionsApplicant);
+            console.log(mailOptionsPoster);
+
+            transporter.sendMail(mailOptionsApplicant, (error, info) => {
                 if (error) {
-                    console.error("Error sending email:", error);
+                    console.error("Error sending email to applicant:", error);
                     return res.status(500).json({
                         success: false,
-                        mess: "Error sending email",
+                        mess: "Error sending email to applicant",
                         error: error.message,
                     });
                 }
-                console.log("Email sent:", info.response);
-                res.status(200).json({
-                    success: true,
-                    mess: "New User Joined",
-                    data: data
+                console.log("Email sent to applicant:", info.response);
+                transporter.sendMail(mailOptionsPoster, (error, info) => {
+                    if (error) {
+                        console.error("Error sending email to job poster:", error);
+                        return res.status(500).json({
+                            success: false,
+                            mess: "Error sending email to job poster",
+                            error: error.message,
+                        });
+                    }
+                    console.log("Email sent to job poster:", info.response);
+                    res.status(200).json({
+                        success: true,
+                        mess: "Record Sent",
+                        data: data
+                    });
                 });
             });
         }
