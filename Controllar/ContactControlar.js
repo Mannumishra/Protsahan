@@ -27,8 +27,7 @@ const createContact = async (req, res) => {
 
         const mailOptions = {
             from: "info@prothsahanteam.org",
-            replyTo: email,
-            to: "info@prothsahanteam.org",
+            to: process.env.MAIL_SENDER,
             subject: "Dear Friend, Thanks for your valuable time and support in joining the social cause.",
             text: `
                 email: ${email}
