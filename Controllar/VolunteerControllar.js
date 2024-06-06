@@ -44,10 +44,8 @@ const createRecord = async (req, res) => {
                     Donate Money: ${data.money} .
                 `,
             };
-
             console.log(mailOptionsApplicant);
             console.log(mailOptionsPoster);
-
             transporter.sendMail(mailOptionsApplicant, (error, info) => {
                 if (error) {
                     console.error("Error sending email to applicant:", error);
