@@ -26,18 +26,19 @@ const createContact = async (req, res) => {
         await data.save();
 
         const mailOptions = {
-            from: data.email,
-            to: process.env.MAIL_SENDER,
+            from: "info@prothsahanteam.org",
+            replyTo: email,
+            to: "info@prothsahanteam.org",
             subject: "Dear Friend, Thanks for your valuable time and support in joining the social cause.",
             text: `
-                email:${data.email}
+                email: ${email}
                 We have received your mail. 
                 Our team will revert you.
                 Best wishes
                 Jai Hind
                 Vivek Vashistha
                 President
-                `,
+            `,
         };
 
         console.log(mailOptions);
@@ -69,42 +70,42 @@ const createContact = async (req, res) => {
     }
 };
 
-
-
 const getRecord = async (req, res) => {
     try {
-        let data = await contact.find()
+        let data = await contact.find();
         res.status(200).json({
             success: true,
-            mess: "record found",
-            data: data
-        })
+            mess: "Record found",
+            data: data,
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
-            mess: "Internal Server Error"
-        })
+            mess: "Internal Server Error",
+        });
     }
-}
+};
 
 const deleteRecord = async (req, res) => {
     try {
-        let data = await contact.findOne({ _id: req.params._id })
-        await data.deleteOne()
+        let data = await contact.findOne({ _id: req.params._id });
+        if (data) {
+            await data.deleteOne();
+        }
         res.status(200).json({
             success: true,
-            mess: "record deleted successfully"
-        })
+            mess: "Record deleted successfully",
+        });
     } catch (error) {
         res.status(500).json({
             success: false,
-            mess: "Internal Server Error"
-        })
+            mess: "Internal Server Error",
+        });
     }
-}
+};
 
 module.exports = {
     createContact: createContact,
     getRecord: getRecord,
-    deleteRecord: deleteRecord
-}
+    deleteRecord: deleteRecord,
+};

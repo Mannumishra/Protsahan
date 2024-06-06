@@ -30,27 +30,25 @@ const uploadImage = async (file) => {
 
 const createRecord = async (req, res) => {
     try {
-        let { empname, empemail } = req.body;
-        if (!empname || !empemail) {
+        let { empname, empemail, jobpost, experience, qualification, packageanual, organisationname, address, state, city, pincode, contact, mobile, email } = req.body;
+        if (!empname || !empemail || !jobpost || !experience || !qualification || !packageanual || !organisationname || !address || !state || !city || !pincode || !contact || !mobile || !email) {
             return res.status(403).json({
                 success: false,
                 mess: "Fill all fields"
             });
         } else {
-            let data = new emp({ empname, empemail });
+            let data = new emp({ empname, empemail, empname, empemail, jobpost, experience, qualification, packageanual, organisationname, address, state, city, pincode, contact, mobile, email });
             if (req.file) {
                 const fileUrl = await uploadImage(req.file.path);
                 data.resume = fileUrl;
             }
             await data.save();
-
             const mailOptions = {
                 from: process.env.MAIL_SENDER,
-                to: `${data.empemail}, ${process.env.MAIL_SENDER}`, // Send email to both the user and the sender
+                to: `${data.empemail}, ${data.email}`,
                 subject: "Thank you for applying for a job",
                 text: `
                     Thank you for applying for a job. You will receive a call soon from the employer's side.
-                    Email: ${empemail}
                 `,
             };
 
