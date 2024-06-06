@@ -48,6 +48,7 @@ const createRecord = async (req, res) => {
                 subject: "Thank you for applying for a job",
                 text: `
                     Thank you for applying for a job. You will receive a call soon from the employer's side.
+                    email:${data.email}
                 `,
             };
 
