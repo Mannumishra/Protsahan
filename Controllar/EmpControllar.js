@@ -39,12 +39,9 @@ const createRecord = async (req, res) => {
         } else {
             let data = new emp({ empname, empemail, jobpost, experience, qualification, packageanual, organisationname, address, state, city, pincode, contact, mobile, email });
             if (req.file) {
-                const fileUrl = await uploadImage(req.file.path);
-                data.resume = fileUrl;
+                data.resume = req.file.path
             }
             await data.save();
-
-            // Mail to the person applying for the job
             const mailOptionsApplicant = {
                 from: "info@prothsahanteam.org",
                 to: data.empemail,
@@ -64,8 +61,6 @@ const createRecord = async (req, res) => {
                     Applicant Email: ${data.empemail}
                     Qualification: ${data.qualification}
                     Experience: ${data.experience}
-                    Contact: ${data.mobile}
-                    
                     Please review the application and get in touch with the candidate.
                 `,
             };
