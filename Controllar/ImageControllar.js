@@ -1,5 +1,26 @@
 const Image = require("../Model/ImageGallery");
 const cloudinary = require('cloudinary').v2;
+const path = require('path');
+const multer = require('multer');
+const fs = require('fs/promises');
+
+// Define storage settings for multer
+const storage = multer.diskStorage({
+    destination: async function (req, file, cb) {
+        const uploadDir = path.join(__dirname, '../uploads'); // Adjust the path as needed
+        try {
+            await fs.mkdir(uploadDir, { recursive: true }); // Ensure the directory exists
+            cb(null, uploadDir); // Set the upload directory
+        } catch (error) {
+            cb(error, null); // Pass any error to multer
+        }
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage }).array('images', 10);
 
 cloudinary.config({
     cloud_name: "dglihfwse",
@@ -7,49 +28,78 @@ cloudinary.config({
     api_secret: "q-Pg0dyWquxjatuRb62-PtFzkM0"
 });
 
-const uploadImage = async (file) => {
-    try {
-        let uploadResult = await cloudinary.uploader.upload(file);
-        return uploadResult.secure_url;
-    } catch (error) {
-        console.log(error);
-        throw error;
-    }
-};
+
 
 const createRecord = async (req, res) => {
     try {
-        const { title, description } = req.body;
-
-        if (!title || !description) {
-            return res.status(403).json({
-                success: false,
-                mess: "Please fill all fields"
-            });
-        }
-
-        const data = new Image({ title, description });
-        for (let i = 1; i <= 10; i++) {
-            const fieldName = `image${i}`;
-            if (req.files && req.files[fieldName]) {
-                const url = await uploadImage(req.files[fieldName][0].path);
-                data[fieldName] = url;
+        upload(req, res, async (err) => {
+            if (err instanceof multer.MulterError) {
+                return res.status(400).json({
+                    success: false,
+                    error: "File upload failed",
+                    details: err.message
+                });
+            } else if (err) {
+                return res.status(500).json({
+                    success: false,
+                    error: "Internal Server Error",
+                    details: err.message
+                });
             }
-        }
-        await data.save();
-        res.status(200).json({
-            success: true,
-            mess: "Gallery Created",
-            data: data
+            
+            const { title, description } = req.body;
+            if (!title || !description) {
+                return res.status(400).json({
+                    success: false,
+                    error: "Please fill all fields"
+                });
+            }
+
+            try {
+                const AllImagesUrls = [];
+                for (let index = 0; index < req.files.length; index++) {
+                    const file = req.files[index];
+                    const safePublicId = file.originalname.replace(/[^a-zA-Z0-9_-]/g, '_'); // Replace spaces and special characters
+                    const uploadResult = await cloudinary.uploader.upload(file.path, {
+                        folder: 'gallery',
+                        public_id: safePublicId // Use sanitized public_id
+                    });
+                    AllImagesUrls.push(uploadResult.secure_url);
+                }
+
+                const data = new Image({
+                    title,
+                    description,
+                    images: AllImagesUrls // Store all images in an array field in MongoDB schema
+                });
+
+                // Save the record to MongoDB
+                await data.save();
+
+                res.status(200).json({
+                    success: true,
+                    message: "Gallery Created",
+                    data: data
+                });
+            } catch (error) {
+                console.error("Error uploading images to Cloudinary:", error);
+                res.status(500).json({
+                    success: false,
+                    error: "Error uploading images to Cloudinary",
+                    details: error.message
+                });
+            }
         });
     } catch (error) {
-        console.log(error);
+        console.error("Error in createRecord function:", error);
         res.status(500).json({
             success: false,
-            mess: "Internal Server Error"
+            error: "Internal Server Error"
         });
     }
 };
+
+
 
 const getRecord = async (req, res) => {
     try {

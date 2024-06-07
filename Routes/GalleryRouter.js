@@ -30,9 +30,7 @@ const upload = multer({
 
 const galleryRouter = express.Router();
 
-galleryRouter.post("/gallery", upload.fields([
-    { name: "image1", maxCount: 10 }
-]), createRecord);
+galleryRouter.post("/gallery", createRecord);
 
 galleryRouter.get("/gallery", getRecord);
 galleryRouter.get("/gallery/:_id", getSingleRecord);
