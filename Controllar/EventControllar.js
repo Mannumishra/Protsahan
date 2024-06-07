@@ -1,9 +1,8 @@
 const event = require("../Model/EventSchema");
 const cloudinary = require('cloudinary').v2;
-const fs = require("fs");
+const fs = require("fs/promises"); // Use promise-based fs
 const path = require('path');
 const multer = require('multer');
-
 
 // Define storage settings for multer
 const storage = multer.diskStorage({
@@ -13,7 +12,7 @@ const storage = multer.diskStorage({
             await fs.mkdir(uploadDir, { recursive: true });
             cb(null, uploadDir);
         } catch (error) {
-            cb(error, null);
+            cb(error);
         }
     },
     filename: function (req, file, cb) {
@@ -28,7 +27,6 @@ cloudinary.config({
     api_key: "215814615744424",
     api_secret: "hd5TVsc8zrVtU_vgetQWIhZKy2k"
 });
-
 
 const createRecord = async (req, res) => {
     try {
@@ -47,7 +45,7 @@ const createRecord = async (req, res) => {
                 });
             }
             
-            const { eventname, eventdate ,eventdescription } = req.body;
+            const { eventname, eventdate, eventdescription } = req.body;
             if (!eventname || !eventdate || !eventdescription) {
                 return res.status(400).json({
                     success: false,
@@ -67,12 +65,13 @@ const createRecord = async (req, res) => {
                     AllImagesUrls.push(uploadResult.secure_url);
                 }
 
-                const data = new Image({
+                const data = new event({
                     eventname,
                     eventdate,
                     eventdescription,
                     images: AllImagesUrls 
-                })
+                });
+
                 await data.save();
                 res.status(200).json({
                     success: true,
@@ -96,7 +95,6 @@ const createRecord = async (req, res) => {
         });
     }
 };
-
 
 const getRecord = async (req, res) => {
     try {
