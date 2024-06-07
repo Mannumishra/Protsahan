@@ -28,20 +28,18 @@ const createContact = async (req, res) => {
         const mailOptions = {
             from: "info@prothsahanteam.org",
             to: process.env.MAIL_SENDER,
-            subject: "Dear Friend, Thanks for your valuable time and support in joining the social cause.",
+            subject: "A New Contact query Recived.",
             text: `
-                email: ${email}
-                We have received your mail. 
-                Our team will revert you.
-                Best wishes
-                Jai Hind
-                Vivek Vashistha
-                President
+                Name : ${data.name} 
+                email: ${data.email}
+                Number : ${data.number}
+                Subject : ${data.subject}
+                Message : ${data.message}
+                Address : ${data.address}
+                Country : ${data.country}
             `,
         };
-
-        console.log(mailOptions);
-
+        console.log(mailOptions)
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.error("Error sending email:", error);
