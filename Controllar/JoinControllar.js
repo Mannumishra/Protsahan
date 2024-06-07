@@ -25,10 +25,10 @@ const transporterNotifications = nodemailer.createTransport({
 
 const createRecord = async (req, res) => {
     try {
-        let { title, firstName, lastName, dob, qualification, collegename, email, mobile, address, country, state, city, pinCode, citizenship, helpMessage, name1, name2, address1, address2, occupation1, occupation2, number1, number2, email1, email2 } = req.body;
+        let { title, firstName, lastName, dob, qualification, collegename, email, mobile, address, country, state, city, pinCode, citizenship, helpMessage, name1, name2, address1, address2, occupation1, occupation2, number1, number2, email1, email2 ,intersted } = req.body;
 
         // Validate required fields
-        if (!title || !firstName || !lastName || !dob || !qualification || !collegename || !email || !mobile || !address || !country || !state || !city || !pinCode || !citizenship || !helpMessage) {
+        if (!title || !firstName || !lastName || !dob || !qualification || !collegename || !email || !mobile || !address || !country || !state || !city || !pinCode || !citizenship || !helpMessage || !intersted) {
             return res.status(403).json({
                 success: false,
                 mess: "Fill all required fields"
@@ -36,7 +36,7 @@ const createRecord = async (req, res) => {
         }
 
         // Create a new record
-        const data = new join({ title, firstName, lastName, dob, qualification, collegename, email, mobile, address, country, state, city, pinCode, citizenship, helpMessage, name1, name2, occupation1, occupation2, address1, address2, number1, number2, email1, email2 });
+        const data = new join({ title, firstName, lastName, dob, qualification, collegename, email, mobile, address, country, state, city, pinCode, citizenship, helpMessage, name1, name2, occupation1, occupation2, address1, address2, number1, number2, email1, email2 ,intersted});
         await data.save();
 
         // Mail options for general email
@@ -75,6 +75,7 @@ const createRecord = async (req, res) => {
                 City: ${data.city}
                 Pin Code: ${data.pinCode}
                 Citizenship: ${data.citizenship}
+                intersted : ${data.intersted}
                 Help Message: ${data.helpMessage}
                 Refrence Name 1: ${data.name1}
                 Refrence Name 2: ${data.name2}

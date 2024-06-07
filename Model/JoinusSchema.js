@@ -100,6 +100,10 @@ const joinSchema = new mongoose.Schema({
     email2: {
         type: String,
         // required:[true,"name1 is must required"]
+    },
+    intersted:{
+        type:String,
+        required:[true,"Intersted is must Required"]
     }
 })
 

@@ -64,10 +64,6 @@ const volunteerSchema = new mongoose.Schema({
     money:{
         type:String,
         required:[true,"Donate monay is must requird"]
-    },
-    intersted:{
-        type:String,
-        required:[true,"Intersted is must Required"]
     }
 })
 
