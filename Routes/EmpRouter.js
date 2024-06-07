@@ -1,4 +1,4 @@
-const { createRecord, getRecord, deleteRecord } = require("../Controllar/EmpControllar")
+const { createRecord, getRecord, deleteRecord, getSingleRecord } = require("../Controllar/EmpControllar")
 const empRouter = require("express").Router()
 const multer = require('multer')
 const fs = require('fs');
@@ -22,6 +22,7 @@ const upload = multer({ storage: storage })
 
 empRouter.post("/emp", upload.single("resume"), createRecord)
 empRouter.get("/emp", getRecord)
+empRouter.get("/emp/:_id", getSingleRecord)
 empRouter.delete("/emp/:_id", deleteRecord)
 
 module.exports = empRouter

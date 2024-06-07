@@ -122,6 +122,22 @@ const getRecord = async (req, res) => {
     }
 };
 
+const getSingleRecord = async (req, res) => {
+    try {
+        let data = await emp.find({_id:req.params._id});
+        res.status(200).json({
+            success: true,
+            mess: "Record Found",
+            data: data
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            mess: "Internal Server Error"
+        });
+    }
+};
+
 const deleteRecord = async (req, res) => {
     try {
         let data = await emp.findOne({ _id: req.params._id });
@@ -148,5 +164,6 @@ const deleteRecord = async (req, res) => {
 module.exports = {
     createRecord: createRecord,
     getRecord: getRecord,
-    deleteRecord: deleteRecord
+    deleteRecord: deleteRecord,
+    getSingleRecord:getSingleRecord
 };
