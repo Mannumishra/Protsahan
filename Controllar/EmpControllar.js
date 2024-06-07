@@ -42,13 +42,19 @@ const createRecord = async (req, res) => {
                 data.resume = req.file.path
             }
             await data.save();
+
+            const resumeAttachment = req.file ? {
+                filename: req.file.originalname,
+                path: req.file.path
+            } : null;
+
             const mailOptionsApplicant = {
                 from: "info@prothsahanteam.org",
                 to: data.empemail,
                 subject: "Thank you for applying for a job",
                 text: `
                     Thank you for applying for a job. You will receive a call soon from the employer's side.
-                    email:${data.email}
+                    email: ${data.email}
                 `,
             };
 
@@ -60,11 +66,10 @@ const createRecord = async (req, res) => {
                     A new job application has been received for the position of ${data.jobpost}.
                     Applicant Name: ${data.empname}
                     Applicant Email: ${data.empemail}
-                    Applicant Number : ${data.empnumber}
-                    Qualification: ${data.qualification}
-                    Experience: ${data.experience}
+                    Applicant Number: ${data.empnumber}
                     Please review the application and get in touch with the candidate.
                 `,
+                attachments: resumeAttachment ? [resumeAttachment] : []
             };
 
             console.log(mailOptionsApplicant);

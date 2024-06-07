@@ -17,9 +17,13 @@ const joinSchema = new mongoose.Schema({
         type: String,
         required: [true, "dob is must required"]
     },
-    panNo: {
+    qualification: {
         type: String,
-        required: [true, "panNo is must required"]
+        required: [true, "qualification is must required"]
+    },
+    collegename:{
+        type: String,
+        required: [true, "collegename is must required"]
     },
     email: {
         type: String,
