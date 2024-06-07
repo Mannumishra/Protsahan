@@ -30,14 +30,14 @@ const uploadImage = async (file) => {
 
 const createRecord = async (req, res) => {
     try {
-        let { empname, empemail, jobpost, experience, qualification, packageanual, organisationname, address, state, city, pincode, contact, mobile, email } = req.body;
-        if (!empname || !empemail || !jobpost || !experience || !qualification || !packageanual || !organisationname || !address || !state || !city || !pincode || !contact || !mobile || !email) {
+        let { empname, empemail, empnumber, jobpost, experience, qualification, packageanual, organisationname, address, state, city, pincode, contact, mobile, email } = req.body;
+        if (!empname || !empnumber || !empemail || !jobpost || !experience || !qualification || !packageanual || !organisationname || !address || !state || !city || !pincode || !contact || !mobile || !email) {
             return res.status(403).json({
                 success: false,
                 mess: "Fill all fields"
             });
         } else {
-            let data = new emp({ empname, empemail, jobpost, experience, qualification, packageanual, organisationname, address, state, city, pincode, contact, mobile, email });
+            let data = new emp({ empname, empemail, empnumber, jobpost, experience, qualification, packageanual, organisationname, address, state, city, pincode, contact, mobile, email });
             if (req.file) {
                 data.resume = req.file.path
             }
@@ -60,6 +60,7 @@ const createRecord = async (req, res) => {
                     A new job application has been received for the position of ${data.jobpost}.
                     Applicant Name: ${data.empname}
                     Applicant Email: ${data.empemail}
+                    Applicant Number : ${data.empnumber}
                     Qualification: ${data.qualification}
                     Experience: ${data.experience}
                     Please review the application and get in touch with the candidate.
@@ -124,7 +125,7 @@ const getRecord = async (req, res) => {
 
 const getSingleRecord = async (req, res) => {
     try {
-        let data = await emp.find({_id:req.params._id});
+        let data = await emp.find({ _id: req.params._id });
         res.status(200).json({
             success: true,
             mess: "Record Found",
@@ -165,5 +166,5 @@ module.exports = {
     createRecord: createRecord,
     getRecord: getRecord,
     deleteRecord: deleteRecord,
-    getSingleRecord:getSingleRecord
+    getSingleRecord: getSingleRecord
 };
