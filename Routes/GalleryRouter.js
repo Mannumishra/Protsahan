@@ -9,9 +9,8 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         cb(null, Date.now() + '-' + file.originalname);
     }
-});
+})
 
-// File filter to only allow image files
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
         cb(null, true);
@@ -30,8 +29,8 @@ const upload = multer({
 
 const galleryRouter = express.Router();
 
-galleryRouter.post("/gallery", createRecord);
 
+galleryRouter.post("/gallery", createRecord);
 galleryRouter.get("/gallery", getRecord);
 galleryRouter.get("/gallery/:_id", getSingleRecord);
 galleryRouter.delete("/gallery/:_id", deleteRecord);

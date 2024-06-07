@@ -7,12 +7,12 @@ const fs = require('fs/promises');
 // Define storage settings for multer
 const storage = multer.diskStorage({
     destination: async function (req, file, cb) {
-        const uploadDir = path.join(__dirname, '../uploads'); // Adjust the path as needed
+        const uploadDir = path.join(__dirname, '../uploads'); 
         try {
-            await fs.mkdir(uploadDir, { recursive: true }); // Ensure the directory exists
-            cb(null, uploadDir); // Set the upload directory
+            await fs.mkdir(uploadDir, { recursive: true }); 
+            cb(null, uploadDir); 
         } catch (error) {
-            cb(error, null); // Pass any error to multer
+            cb(error, null);
         }
     },
     filename: function (req, file, cb) {
@@ -59,10 +59,10 @@ const createRecord = async (req, res) => {
                 const AllImagesUrls = [];
                 for (let index = 0; index < req.files.length; index++) {
                     const file = req.files[index];
-                    const safePublicId = file.originalname.replace(/[^a-zA-Z0-9_-]/g, '_'); // Replace spaces and special characters
+                    const safePublicId = file.originalname.replace(/[^a-zA-Z0-9_-]/g, '_');
                     const uploadResult = await cloudinary.uploader.upload(file.path, {
                         folder: 'gallery',
-                        public_id: safePublicId // Use sanitized public_id
+                        public_id: safePublicId 
                     });
                     AllImagesUrls.push(uploadResult.secure_url);
                 }
@@ -70,12 +70,9 @@ const createRecord = async (req, res) => {
                 const data = new Image({
                     title,
                     description,
-                    images: AllImagesUrls // Store all images in an array field in MongoDB schema
-                });
-
-                // Save the record to MongoDB
+                    images: AllImagesUrls 
+                })
                 await data.save();
-
                 res.status(200).json({
                     success: true,
                     message: "Gallery Created",
