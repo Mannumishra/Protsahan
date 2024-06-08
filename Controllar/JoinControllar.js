@@ -77,15 +77,19 @@ const createRecord = async (req, res) => {
                 Citizenship: ${data.citizenship}
                 intersted : ${data.intersted}
                 Help Message: ${data.helpMessage}
+
+                       Refrence First
                 Refrence Name 1: ${data.name1}
-                Refrence Name 2: ${data.name2}
-                Refrence Address 1: ${data.address1}
-                Refrence Address 2: ${data.address2}
+                Refrence Address 1: ${data.address1}            
                 Refrence Occupation 1: ${data.occupation1}
+                Refrence Number 1: ${data.number1}
+                  Refrence Email 1: ${data.email1}
+
+                        Refrence Second
+                Refrence Name 2: ${data.name2}
+                Refrence Address 2: ${data.address2}
                 Refrence Occupation 2: ${data.occupation2}
-                Refrence Number 1: ${data.number1}Refrence 
                 Refrence Number 2: ${data.number2}
-                Refrence Email 1: ${data.email1}
                 Refrence Email 2: ${data.email2}
             `,
         };
